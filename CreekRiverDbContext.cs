@@ -41,7 +41,7 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
 
     modelBuilder.Entity<Reservation>().HasData(new Reservation[]
     {
-        new Reservation {Id = 1, CampsiteId = 3, CheckinDate = "2024-06-10", CheckoutDate = "2024-06-13", UserProfileId = 123}
+        new Reservation {Id = 1, CampsiteId = 3, CheckinDate = new DateTime(2024, 06, 10), CheckoutDate = new DateTime(2024, 06, 13), UserProfileId = 123}
     });
 }
 }
