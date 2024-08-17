@@ -87,4 +87,18 @@ app.MapPut("/api/campsites/{id}", (CreekRiverDbContext db, int id, Campsite camp
     return Results.NoContent();
 });
 
+app.MapGet("/api/reservations", (CreekRiverDbContext db) =>
+{
+    return db.Reservations
+        // JOIN UserProfiles table
+        .Include(r => r.UserProfile)
+        // JOIN Campsites table
+        .Include(r => r.Campsite)
+        // adds CampsiteType data to Campsites data
+        .ThenInclude(c => c.CampsiteType)
+        // corresponds to the ORDER BY keywords in SQL
+        .OrderBy(res => res.CheckinDate)
+        .ToList();
+});
+
 app.Run();
