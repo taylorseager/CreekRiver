@@ -33,29 +33,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
+app.MapGet("/api/campsites", (CreekRiverDbContext db) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    return db.Campsites.ToList();
+});
 
-app.MapGet("/weatherforecast", () =>
+app.MapGet("/api/campsites/{id}", (CreekRiverDbContext db, int id) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    try
+    {
+        var selectedCampsite = db.Campsites.Include(c => c.CampsiteType).Single(c => c.Id == id);
+
+        return Results.Ok(selectedCampsite);
+    }
+   
+    catch (InvalidOperationException)
+        {
+            return Results.NotFound();
+        }
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
