@@ -55,6 +55,7 @@ app.MapGet("/api/campsites/{id}", (CreekRiverDbContext db, int id) =>
 
 app.MapPost("/api/campsites", (CreekRiverDbContext db, Campsite campsite) =>
 {
+    Console.WriteLine(campsite);
     db.Campsites.Add(campsite);
     db.SaveChanges();
     return Results.Created($"/api/campsites/{campsite.Id}", campsite);
